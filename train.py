@@ -8,6 +8,7 @@ import sys, os
 import pandas as pd
 import util
 from attacks import Attack
+import time
 
 
 def make_attack(class_name, model, args) -> Attack:
@@ -53,6 +54,7 @@ def main(params):
         cb.on_train_begin()
     history = []
     for i in range(epochs):
+        t0 = time.time()
         for cb in callbacks:
             cb.on_epoch_begin(i)
         hist_i = []
@@ -72,7 +74,7 @@ def main(params):
         history.append(
             {**stats, 'epoch': i, 'lr': model.optimizer.lr.numpy(), 'stop_training': model.stop_training})
         if params.verbose > 0:
-            print(history[-1])
+            print(history[-1], '{:.2} min'.format((time.time() - t0) / 60))
         del hist_i, hist, vala_eval, train_eval, stats
         if model.stop_training:
             break
