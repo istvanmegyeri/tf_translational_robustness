@@ -46,6 +46,7 @@ class WorstCrop(Attack):
             self.loss = lambda p, y: np.argmax(p, axis=1) != np.argmax(y, axis=1)
         elif loss == 'mse':
             self.loss = lambda p, y: np.sum(np.square(p - y), axis=1)
+        # @TODO: add support for categorical crossentropy
 
     def __call__(self, x, y):
         dim_to_crop = x.shape[2] - self.seq_length

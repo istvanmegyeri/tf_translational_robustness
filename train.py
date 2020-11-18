@@ -92,6 +92,7 @@ if __name__ == '__main__':
     parser.add_argument('--epoch', type=int, default=100)
     parser.add_argument('--verbose', type=int, default=1)
     parser.add_argument('--attack', type=str, default='attacks.RandomCrop')
+    parser.add_argument('--loss', type=str, default='zero-one')
     parser.add_argument('--save_dir', type=str)
     FLAGS = parser.parse_args()
     np.random.seed(9)
