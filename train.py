@@ -103,7 +103,7 @@ if __name__ == '__main__':
         tf.config.experimental.set_memory_growth(selected, True)
         tf.config.experimental.set_virtual_device_configuration(
             selected,
-            [tf.config.experimental.VirtualDeviceConfiguration(memory_limit=1024)])
+            [tf.config.experimental.VirtualDeviceConfiguration(memory_limit=3072)])
         logical_gpus = tf.config.experimental.list_logical_devices('GPU')
         l_gpu = logical_gpus[0]
         with tf.device(l_gpu.name):
