@@ -3,14 +3,8 @@ from sklearn.model_selection import train_test_split
 import tensorflow as tf
 
 
-def random_crop(seq, label, seq_length=90):
-    seq = tf.image.random_crop(seq,
-                               size=[seq.shape[0], seq_length, 4])
-    return seq, label
-
-
-class DataSet():
-    def __init__(self, f_path="data/SydhImr90MafkIggrabUniPk/SydhImr90MafkIggrabUniPk.npz", val_size=0.1,
+class DataSet:
+    def __init__(self, f_path, val_size=0.1,
                  seed=9) -> None:
         tf_data = np.load(f_path)
         x_train, y_train, self.x_test, self.y_test = tf_data['arr_0'], tf_data['arr_1'], tf_data['arr_2'], \
@@ -24,3 +18,6 @@ class DataSet():
 
     def get_val(self):
         return self.x_val, self.y_val
+
+    def get_test(self):
+        return self.x_test, self.y_test

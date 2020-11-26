@@ -18,7 +18,7 @@ def make_attack(class_name, model, args) -> Attack:
 
 def main(params):
     print(params)
-    ds = DataSet()
+    ds = DataSet(params.data_path)
     x_train, y_train = ds.get_train()
     x_val, y_val = ds.get_val()
     print(x_train.shape, x_val.shape, y_train.shape, y_val.shape)
@@ -94,6 +94,7 @@ if __name__ == '__main__':
     parser.add_argument('--attack', type=str, default='attacks.RandomCrop')
     parser.add_argument('--loss', type=str, default='zero-one')
     parser.add_argument('--save_dir', type=str)
+    parser.add_argument('--data_path', type=str, default='./data/motif_discovery/SydhImr90MafkIggrabUniPk/SydhImr90MafkIggrabUniPk.npz')
     FLAGS = parser.parse_args()
     np.random.seed(9)
     if FLAGS.gpu is not None:

@@ -1,6 +1,5 @@
 from abc import ABC
 from abc import abstractmethod
-from datareader import random_crop
 import tensorflow as tf
 import numpy as np
 
@@ -11,6 +10,10 @@ class Attack(ABC):
 
     @abstractmethod
     def __call__(self, x, y):
+        pass
+
+    @abstractmethod
+    def get_name(self):
         pass
 
 
@@ -24,6 +27,9 @@ class MiddleCrop(Attack):
         dim_to_crop = x.shape[2] - self.seq_length
         return x[:, :, dim_to_crop // 2:-dim_to_crop // 2], y
 
+    def get_name(self):
+        return 'middle-crop'
+
 
 class RandomCrop(Attack):
 
@@ -35,6 +41,9 @@ class RandomCrop(Attack):
         x_crop = tf.image.random_crop(x, size=[x.shape[0], x.shape[1], self.seq_length, x.shape[3]])
         return x_crop, y
 
+    def get_name(self):
+        return 'random-crop'
+
 
 class WorstCrop(Attack):
 
@@ -42,6 +51,7 @@ class WorstCrop(Attack):
         super().__init__(model, **kwargs)
         self.seq_length = seq_length
         self.batch_size = batch_size
+        self.loss_name = loss
         if loss == 'zero-one':
             self.loss = lambda p, y: np.argmax(p, axis=1) != np.argmax(y, axis=1)
         elif loss == 'mse':
@@ -67,3 +77,6 @@ class WorstCrop(Attack):
                 x_adv = tf.where(tf.reshape(improved, (improved.shape[0], 1, 1, 1)), x_adv_i, x_adv)
                 l_val[improved] = l_vali[improved]
         return x_adv, y
+
+    def get_name(self):
+        return 'worst-crop' + self.loss_name
