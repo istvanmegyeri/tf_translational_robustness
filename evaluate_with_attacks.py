@@ -44,10 +44,11 @@ def main(params):
 
     df = pd.DataFrame(data=[d])
     # df = pd.DataFrame(data=d, columns=['test acc', 'attack', 'model', 'time'])
-    if os.path.exists("models/test_eval.csv"):
-        df.to_csv("models/test_eval.csv", index=False, mode='a', header=False)
+    out_csv_name = "test_eval_Sp1_Znf_Mafk_Mafk-oc.csv"
+    if os.path.exists(out_csv_name):
+        df.to_csv(out_csv_name, index=False, mode='a', header=False)
     else:
-        df.to_csv("models/test_eval.csv", index=False, mode='a', header=True)
+        df.to_csv(out_csv_name, index=False, mode='a', header=True)
 
 
 if __name__ == '__main__':
