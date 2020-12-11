@@ -1,8 +1,8 @@
-python evaluate_with_attacks.py --attack attacks.MiddleCrop --model_path models/middle/Mafk_01/checkpoints/tf_model_039_0.26_0.94.hdf5 --data_path data/motif_discovery/SydhImr90MafkIggrabUniPk/SydhImr90MafkIggrabUniPk.npz
-python evaluate_with_attacks.py --attack attacks.RandomCrop --model_path models/middle/Mafk_01/checkpoints/tf_model_039_0.26_0.94.hdf5 --data_path data/motif_discovery/SydhImr90MafkIggrabUniPk/SydhImr90MafkIggrabUniPk.npz
-python evaluate_with_attacks.py --attack attacks.WorstCrop --model_path models/middle/Mafk_01/checkpoints/tf_model_039_0.26_0.94.hdf5 --data_path data/motif_discovery/SydhImr90MafkIggrabUniPk/SydhImr90MafkIggrabUniPk.npz
-python evaluate_with_attacks.py --attack attacks.WorstCrop --model_path models/middle/Mafk_01/checkpoints/tf_model_039_0.26_0.94.hdf5 --data_path data/motif_discovery/SydhImr90MafkIggrabUniPk/SydhImr90MafkIggrabUniPk.npz --loss xe
-
+python evaluate_with_attacks.py --attack attacks.MiddleCrop --model_path models/middle/Mafk_01/checkpoints/tf_model_039_0.26_0.94.hdf5 --data_path data/motif_occupancy/SydhImr90MafkIggrabUniPk/SydhImr90MafkIggrabUniPk.npz
+python evaluate_with_attacks.py --attack attacks.RandomCrop --model_path models/middle/Mafk_01/checkpoints/tf_model_039_0.26_0.94.hdf5 --data_path data/motif_occupancy/SydhImr90MafkIggrabUniPk/SydhImr90MafkIggrabUniPk.npz
+python evaluate_with_attacks.py --attack attacks.WorstCrop --model_path models/middle/Mafk_01/checkpoints/tf_model_039_0.26_0.94.hdf5 --data_path data/motif_occupancy/SydhImr90MafkIggrabUniPk/SydhImr90MafkIggrabUniPk.npz
+python evaluate_with_attacks.py --attack attacks.WorstCrop --model_path models/middle/Mafk_01/checkpoints/tf_model_039_0.26_0.94.hdf5 --data_path data/motif_occupancy/SydhImr90MafkIggrabUniPk/SydhImr90MafkIggrabUniPk.npz --loss xe
+echo
 python evaluate_with_attacks.py --attack attacks.MiddleCrop --model_path models/random/Mafk_01/checkpoints/tf_model_038_0.26_0.94.hdf5 --data_path data/motif_discovery/SydhImr90MafkIggrabUniPk/SydhImr90MafkIggrabUniPk.npz
 python evaluate_with_attacks.py --attack attacks.RandomCrop --model_path models/random/Mafk_01/checkpoints/tf_model_038_0.26_0.94.hdf5 --data_path data/motif_discovery/SydhImr90MafkIggrabUniPk/SydhImr90MafkIggrabUniPk.npz
 python evaluate_with_attacks.py --attack attacks.WorstCrop --model_path models/random/Mafk_01/checkpoints/tf_model_038_0.26_0.94.hdf5 --data_path data/motif_discovery/SydhImr90MafkIggrabUniPk/SydhImr90MafkIggrabUniPk.npz

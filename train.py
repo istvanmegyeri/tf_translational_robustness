@@ -26,7 +26,7 @@ def main(params):
     tf_dataset = tf_dataset.shuffle(buffer_size=len(x_train), reshuffle_each_iteration=True).batch(params.batch_size)
     model_holder = TFModel()
     model = model_holder.build_model((x_train.shape[1], params.seq_length, x_train.shape[3]))
-    optimizer = keras.optimizers.Adam(lr=5e-5)
+    optimizer = keras.optimizers.Adam(lr=params.learning_rate)
 
     model.compile(loss='categorical_crossentropy', optimizer=optimizer, metrics=['accuracy'])
     attack = make_attack(params.attack, model, params)
@@ -94,6 +94,7 @@ if __name__ == '__main__':
     parser.add_argument('--attack', type=str, default='attacks.RandomCrop')
     parser.add_argument('--loss', type=str, default='zero-one')
     parser.add_argument('--save_dir', type=str)
+    parser.add_argument('--learning_rate', type=float, default=5e-5)
     parser.add_argument('--data_path', type=str, default='./data/motif_discovery/SydhImr90MafkIggrabUniPk/SydhImr90MafkIggrabUniPk.npz')
     FLAGS = parser.parse_args()
     np.random.seed(9)
@@ -104,7 +105,7 @@ if __name__ == '__main__':
         tf.config.experimental.set_memory_growth(selected, True)
         tf.config.experimental.set_virtual_device_configuration(
             selected,
-            [tf.config.experimental.VirtualDeviceConfiguration(memory_limit=3072)])
+            [tf.config.experimental.VirtualDeviceConfiguration(memory_limit=6072)])
         logical_gpus = tf.config.experimental.list_logical_devices('GPU')
         l_gpu = logical_gpus[0]
         with tf.device(l_gpu.name):
