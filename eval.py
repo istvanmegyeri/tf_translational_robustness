@@ -4,6 +4,9 @@ import tensorflow as tf
 from datareader import DeepSea
 import matplotlib.pyplot as plt
 from sklearn.metrics import roc_curve, average_precision_score, precision_recall_curve, auc
+from collections import OrderedDict
+from sklearn.decomposition import PCA
+import matplotlib.pyplot as plt
 
 
 def avg_auc(y, p, disp=False):
@@ -14,8 +17,9 @@ def avg_auc(y, p, disp=False):
         if disp:
             plt.plot(fpr, tpr)
             plt.show()
-        aucs.append(auc(fpr, tpr))
-    return np.mean(aucs)
+        v = auc(fpr, tpr)
+        aucs.append(v)
+    return np.nanmean(aucs)
 
 
 def avg_psauc(y, p, disp=False):
@@ -25,12 +29,21 @@ def avg_psauc(y, p, disp=False):
         if disp:
             plt.plot(precision, recall)
             plt.show()
-        aucs.append(auc(recall, precision))
-    return np.mean(aucs)
+        v = auc(recall, precision)
+        aucs.append(v)
+    return np.nanmean(aucs)
 
 
-def score_fn(p):
+def max_score(p):
     return np.max(p, axis=1, keepdims=True)
+
+
+def mean_score(p):
+    return np.mean(p, axis=1, keepdims=True)
+
+
+def ul_score(p):
+    return np.mean(np.log(p), axis=1, keepdims=True)
 
 
 def avg_ps(y, p):
@@ -42,21 +55,33 @@ def main(params):
     ds = DeepSea(params.fname)
     y_test = ds.get_test()
     pred = np.load('models/tbinet/tpreds_ossz_01.npz')['arr_0']
-    pred_in = pred[:y_test.shape[0]]
-    print('AVG-auc:', avg_auc(y_test[:,:10], pred_in[:,:10]))
-    print('AVG-PR-AUC:', avg_psauc(y_test[:,:10], pred_in[:,:10]))
-    score = score_fn(pred)
-    print(np.sum(y_test))
-    # plt.hist(score[:y_test.shape[0], 0])
-    # plt.figure()
-    # plt.hist(score[y_test.shape[0]:, 0])
-    # plt.show()
-    is_in = np.zeros((score.shape[0], 1))
+    pred_in = pred[:pred.shape[0] // 2]
+    pred_out = pred[pred.shape[0] // 2:]
+    idx = 0
+    y_test = y_test[:y_test.shape[0] // 2]
+    pred_in = (pred_in[:pred_in.shape[0] // 2] + pred_in[pred_in.shape[0] // 2:]) / 2
+    pred_out = (pred_out[:pred_out.shape[0] // 2] + pred_out[pred_out.shape[0] // 2:]) / 2
+    print('AVG-auc:', avg_auc(y_test, pred_in))
+    print('AVG-PR-AUC:', avg_psauc(y_test, pred_in))
+    score_fns = OrderedDict([('max', max_score),
+                             ('mean', mean_score),
+                             ('ul', ul_score)
+                             ])
+    print(np.sum(np.square(pred_in-pred_out)))
+    pred = np.concatenate((pred_in, pred_out), axis=0)
+    is_in = np.zeros((pred.shape[0], 1))
     is_in[:y_test.shape[0]] = 1
-    # plt.hist(is_in)
-    # plt.show()
-    print('AUC(in vs shuffle):', avg_auc(is_in, score))
-    print('AUPR(in vs shuffle):', avg_psauc(is_in, score))
+    for name, sf in score_fns.items():
+        score = sf(pred)
+        print(name, 'AUC(in vs shuffle):', avg_auc(is_in, score))
+        print(name, 'AUPR(in vs shuffle):', avg_psauc(is_in, score))
+    is_in=is_in.flatten()
+    pca = PCA(n_components=2)
+    xs = pca.fit_transform(pred)
+    for c in [0, 1]:
+        plt.figure()
+        plt.scatter(xs[is_in == c, 0], xs[is_in == c, 1])
+    plt.show()
 
 
 if __name__ == '__main__':
