@@ -67,20 +67,24 @@ def main(params):
                              ('mean', mean_score),
                              ('ul', ul_score)
                              ])
-    print(np.sum(np.square(pred_in-pred_out)))
+    print(np.sum(np.square(pred_in - pred_out)))
+    print(pred_in.shape, pred_out.shape)
     pred = np.concatenate((pred_in, pred_out), axis=0)
+    print(pred.shape)
     is_in = np.zeros((pred.shape[0], 1))
-    is_in[:y_test.shape[0]] = 1
+    is_in[:is_in.shape[0] // 2] = 1
     for name, sf in score_fns.items():
         score = sf(pred)
         print(name, 'AUC(in vs shuffle):', avg_auc(is_in, score))
         print(name, 'AUPR(in vs shuffle):', avg_psauc(is_in, score))
-    is_in=is_in.flatten()
-    pca = PCA(n_components=2)
+    is_in = is_in.flatten()
+    pca = PCA(n_components=100)
     xs = pca.fit_transform(pred)
     for c in [0, 1]:
         plt.figure()
         plt.scatter(xs[is_in == c, 0], xs[is_in == c, 1])
+    print((pca.explained_variance_ / np.sum(pca.explained_variance_))[:10])
+    print(pca.explained_variance_ratio_[:10])
     plt.show()
 
 
