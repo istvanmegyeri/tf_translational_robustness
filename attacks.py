@@ -1,6 +1,5 @@
 from abc import ABC
 from abc import abstractmethod
-from datareader import random_crop
 import tensorflow as tf
 import numpy as np
 
@@ -13,12 +12,53 @@ class Attack(ABC):
     def __call__(self, x, y):
         pass
 
+    @abstractmethod
+    def get_name(self):
+        pass
+
+
+class Shuffle(Attack):
+
+    def __init__(self, model, seed=9, **kwargs) -> None:
+        super().__init__(model, **kwargs)
+        self.seed = seed
+
+    def get_name(self):
+        return "Shuffle"
+
+    def __call__(self, x, y):
+        rnd = np.random.RandomState(self.seed)
+        x_shuffle = np.array(x, copy=True)
+        seq_length = x.shape[1]
+        for i in range(x.shape[0]):
+            idxs = rnd.permutation(seq_length)
+            x_shuffle[i] = x[i][idxs]
+        return x_shuffle, y
+
+
+class Uniform(Attack):
+
+    def __init__(self, model, seed=9, **kwargs) -> None:
+        super().__init__(model, **kwargs)
+        self.seed = seed
+
+    def get_name(self):
+        return "Uniform"
+
+    def __call__(self, x, y):
+        rnd = np.random.RandomState(self.seed)
+        x_uni = rnd.uniform(0, 1, x.shape)
+        return x_uni, y
+
 
 class MiddleCrop(Attack):
 
     def __init__(self, model, seq_length, **kwargs) -> None:
         super().__init__(model, **kwargs)
         self.seq_length = seq_length
+
+    def get_name(self):
+        return "MiddleCrop"
 
     def __call__(self, x, y):
         dim_to_crop = x.shape[2] - self.seq_length
@@ -30,6 +70,9 @@ class RandomCrop(Attack):
     def __init__(self, model, seq_length, **kwargs) -> None:
         super().__init__(model, **kwargs)
         self.seq_length = seq_length
+
+    def get_name(self):
+        return "RandomCrop"
 
     def __call__(self, x, y):
         x_crop = tf.image.random_crop(x, size=[x.shape[0], x.shape[1], self.seq_length, x.shape[3]])
@@ -52,6 +95,9 @@ class WorstCrop(Attack):
             # self.loss = lambda p, y: -np.log(np.sum(p * y, axis=1))
             eps = 1e-4
             self.loss = lambda p, y: -np.log(np.maximum(np.sum(p * y, axis=1), eps))
+
+    def get_name(self):
+        return "WorstCrop"
 
     def __call__(self, x, y):
         dim_to_crop = x.shape[2] - self.seq_length

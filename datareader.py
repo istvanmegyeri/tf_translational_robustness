@@ -1,21 +1,20 @@
 import numpy as np
 from sklearn.model_selection import train_test_split
-import tensorflow as tf
-
-
-def random_crop(seq, label, seq_length=90):
-    seq = tf.image.random_crop(seq,
-                               size=[seq.shape[0], seq_length, 4])
-    return seq, label
 
 
 class DataSet():
-    def __init__(self, f_path="data/motif_occupancy/SydhImr90MafkIggrabUniPk/SydhImr90MafkIggrabUniPk.npz",
+    def __init__(self, f_path, test_path=None,
                  val_size=0.1,
                  seed=9) -> None:
-        tf_data = np.load(f_path)
-        x_train, y_train, self.x_test, self.y_test = tf_data['arr_0'], tf_data['arr_1'], tf_data['arr_2'], \
-                                                     tf_data['arr_3']
+        data = np.load(f_path)
+        if 'x' in data.keys():
+            x_train, y_train = data['x'], data['y']
+            if test_path is not None:
+                test_data = np.load(test_path)
+                self.x_test, self.y_test = test_data['x'], test_data['y']
+        else:
+            x_train, y_train, self.x_test, self.y_test = data['arr_0'], data['arr_1'], data['arr_2'], \
+                                                         data['arr_3']
 
         self.x_train, self.x_val, self.y_train, self.y_val = train_test_split(x_train, y_train, test_size=val_size,
                                                                               random_state=seed)
@@ -26,11 +25,5 @@ class DataSet():
     def get_val(self):
         return self.x_val, self.y_val
 
-
-class DeepSea():
-
-    def __init__(self, lab_path) -> None:
-        self.y_test = np.load(lab_path)['arr_0']
-
     def get_test(self):
-        return self.y_test
+        return self.x_test, self.y_test

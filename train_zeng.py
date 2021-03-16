@@ -4,7 +4,7 @@ import tensorflow as tf
 import numpy as np
 from datareader import DataSet
 from models import TFModel
-import sys, os
+import os
 import pandas as pd
 import util
 from attacks import Attack
@@ -34,9 +34,8 @@ def main(params):
     callbacks = [keras.callbacks.EarlyStopping(monitor="val_loss", patience=25,
                                                mode='min',
                                                restore_best_weights=True, verbose=1),
-                 keras.callbacks.ReduceLROnPlateau(
-                     monitor='val_loss', factor=0.25, patience=5, verbose=1, mode='min',
-                     min_delta=0.0001, cooldown=0, min_lr=0)
+                 keras.callbacks.ReduceLROnPlateau(monitor='val_loss', factor=0.25, patience=5, verbose=1, mode='min',
+                                                   min_delta=0.0001, cooldown=0, min_lr=0)
                  ]
     if params.save_dir is not None:
         m_path = os.path.join(params.save_dir, 'checkpoints', model_holder.get_name())
