@@ -10,8 +10,10 @@ conda install tensorflow-gpu==2.1
 * Zeng's dataset
 * DeepSea dataset
 
-Data conversion from `.mat` to `.npz` can be done by:
-`python convert_data --in_fname path_to_mat --out_fname path_to_output_npz` 
+Data conversion from `.mat` to `.npz` can be done by:  
+`python convert_data.py --in_fname path_to_mat --out_fname path_to_output_npz`
+
+Alternatively, you can download our converted data from [here](one_drive_link). 
 
 ## Model training
 Our best models can be downloaded from [here](add_link_here). Checkpoints are also avaiable [here](add_link_here).
