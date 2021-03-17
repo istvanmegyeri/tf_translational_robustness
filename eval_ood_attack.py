@@ -79,15 +79,11 @@ def main(params):
 
     if use_avg:
         x_test_out = np.concatenate((x_test_out, np.flip(x_test_out, axis=1)), axis=0)
-    x_all = np.concatenate((x_test, x_test_out), axis=0)
-    del x_test, x_test_out
-
     # make prediction on normal and ood samples
-    pred = model.predict(x_all, batch_size=500)
+    pred_in = model.predict(x_test, batch_size=500)
+    pred_out = model.predict(x_test_out, batch_size=250)
     if use_avg:
         y_test = y_test[:y_test.shape[0] // 2]
-    pred_in = pred[:pred.shape[0] // 2]
-    pred_out = pred[pred.shape[0] // 2:]
     if use_avg:
         pred_in = (pred_in[:pred_in.shape[0] // 2] + pred_in[pred_in.shape[0] // 2:]) / 2
         pred_out = (pred_out[:pred_out.shape[0] // 2] + pred_out[pred_out.shape[0] // 2:]) / 2
@@ -111,7 +107,7 @@ def main(params):
                       'avg-auprc': avg_auprc(is_in, score)
                       })
         print(stats[-1])
-    
+
     if params.out_fname is not None:
         df = pd.DataFrame(data=stats)
         out_csv_name = params.out_fname
@@ -138,7 +134,7 @@ if __name__ == '__main__':
         tf.config.experimental.set_memory_growth(selected, True)
         tf.config.experimental.set_virtual_device_configuration(
             selected,
-            [tf.config.experimental.VirtualDeviceConfiguration(memory_limit=5072)])
+            [tf.config.experimental.VirtualDeviceConfiguration(memory_limit=10000)])
         logical_gpus = tf.config.experimental.list_logical_devices('GPU')
         l_gpu = logical_gpus[0]
         with tf.device(l_gpu.name):

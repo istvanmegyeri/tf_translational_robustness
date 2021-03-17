@@ -47,7 +47,10 @@ class Uniform(Attack):
 
     def __call__(self, x, y):
         rnd = np.random.RandomState(self.seed)
-        x_uni = rnd.uniform(0, 1, x.shape)
+        x_uni = np.array(x, copy=True, dtype=np.float32)
+        shape = x[0].shape
+        for i in range(x_uni.shape[0]):
+            x_uni[i] = rnd.uniform(0, 1, shape)
         return x_uni, y
 
 
