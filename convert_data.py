@@ -1,9 +1,10 @@
 from argparse import ArgumentParser
 import numpy as np
 from scipy import io
+import h5py
 import util
 import time
-
+import os
 
 # Reason for conversion
 # loading test set in mat format 5.1 s, 283 MB
@@ -12,9 +13,16 @@ import time
 def main(params):
     print(params)
     if params.in_fname.endswith('.mat'):
-        testmat = io.loadmat(params.in_fname)
-        x = np.array(np.transpose(testmat['testxdata'], axes=(0, 2, 1)), dtype=np.bool)
-        y = np.array(testmat['testdata'][:, 125:815], dtype=np.bool)
+        if params.in_fname.endswith('test.mat'):
+            mat_file = io.loadmat(params.in_fname)
+        else:
+            mat_file = h5py.File(params.in_fname, 'r')
+        keys=list(filter(lambda k:not k.startswith("_"),mat_file.keys()))
+        data_key=list(filter(lambda k:k.endswith('xdata'),keys))[0]
+        lab_key=list(filter(lambda k:not k.endswith('xdata'),keys))[0]
+        print(data_key,lab_key)
+        x = np.array(np.transpose(mat_file[data_key], axes=(0, 2, 1)), dtype=np.bool)
+        y = np.array(mat_file[lab_key][:, 125:815], dtype=np.bool)
     else:
         raise Exception('Unsupported file format: {0}'.format(params.in_fname))
 
