@@ -21,8 +21,8 @@ def main(params):
         data_key=list(filter(lambda k:k.endswith('xdata'),keys))[0]
         lab_key=list(filter(lambda k:not k.endswith('xdata'),keys))[0]
         print(data_key,lab_key)
-        x = np.array(np.transpose(mat_file[data_key], axes=(0, 2, 1)), dtype=np.bool)
-        y = np.array(mat_file[lab_key][:, 125:815], dtype=np.bool)
+        x = np.array(np.transpose(mat_file[data_key], axes=(2, 0, 1)), dtype=np.bool)
+        y = np.array(mat_file[lab_key], dtype=np.bool).T[:, 125:815]
     else:
         raise Exception('Unsupported file format: {0}'.format(params.in_fname))
 
