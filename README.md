@@ -7,16 +7,16 @@ conda activate env_name
 conda install tensorflow-gpu==2.1
 ```
 ## Datasets
-* Zeng's dataset
-* DeepSea dataset
+* [Zeng's dataset](http://cnn.csail.mit.edu/)
+* [DeepSea dataset](http://deepsea.princeton.edu/help/ "DeepSea dataset")
 
 Data conversion from `.mat` to `.npz` can be done by:  
 `python convert_data.py --in_fname path_to_mat --out_fname path_to_output_npz`
 
-Alternatively, you can download our converted data from [here](one_drive_link). 
+Alternatively, you can download our converted data from [here](https://uszeged-my.sharepoint.com/:f:/g/personal/pap_gergely_1_o365_u-szeged_hu/EmfyJP3jFWFLjxe_NK2t3N0BGFOBTn-kCO0Id8dOoV9N0A?e=yAiAx2). 
 
 ## Model training
-Our best models can be downloaded from [here](add_link_here). Checkpoints are also avaiable [here](add_link_here).
+Our best models can be downloaded from [here](add_link_here). Checkpoints are also avaiable [here](https://uszeged-my.sharepoint.com/:f:/g/personal/pap_gergely_1_o365_u-szeged_hu/Eo9ntvgjGjdMjWVLWxgLXq4Bz4L9fqJCyhbM8wuX1wdLIw?e=6LDzNK).
 
 ### Normal training
 * on Zeng's dataset:
@@ -45,6 +45,8 @@ python eval_trans_attack.p --attack attacks.WorstCrop --model_path path_to_model
 ```
 Under ood attack:
 ```
-python eval_ood_attack.p --attack attacks.Shuffle --data_path path_to_test_set --model_path path_to_model
-python eval_ood_attack.p --attack attacks.Uniform --data_path path_to_test_set --model_path path_to_model
+python eval_ood_attack.py --attack attacks.Shuffle --data_path path_to_test_set --test_path path_to_test_set --model_path path_to_model
+python eval_ood_attack.py --attack attacks.Uniform --data_path path_to_test_set --test_path path_to_test_set --model_path path_to_model
 ```
+
+Partial (incomplete) Results of the Evaluations: [here](add_link_here)

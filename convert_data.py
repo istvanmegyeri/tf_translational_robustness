@@ -13,16 +13,19 @@ import os
 def main(params):
     print(params)
     if params.in_fname.endswith('.mat'):
-        if params.in_fname.endswith('test.mat'):
-            mat_file = io.loadmat(params.in_fname)
-        else:
-            mat_file = h5py.File(params.in_fname, 'r')
+        # if params.in_fname.endswith('test.mat'):
+        #     mat_file = io.loadmat(params.in_fname)
+        # else:
+        mat_file = io.loadmat(params.in_fname)
         keys=list(filter(lambda k:not k.startswith("_"),mat_file.keys()))
         data_key=list(filter(lambda k:k.endswith('xdata'),keys))[0]
         lab_key=list(filter(lambda k:not k.endswith('xdata'),keys))[0]
         print(data_key,lab_key)
-        x = np.array(np.transpose(mat_file[data_key], axes=(2, 0, 1)), dtype=np.bool)
-        y = np.array(mat_file[lab_key], dtype=np.bool).T[:, 125:815]
+        if params.in_fname.startswith("train"):
+            x = np.array(np.transpose(mat_file[data_key], axes=(2, 0, 1)), dtype=np.bool)
+        else:
+            x = np.array(np.transpose(mat_file[data_key], axes=(0, 2, 1)), dtype=np.bool)
+        y = np.array(mat_file[lab_key], dtype=np.bool)[:, 125:815]
     else:
         raise Exception('Unsupported file format: {0}'.format(params.in_fname))
 
