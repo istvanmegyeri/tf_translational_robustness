@@ -76,6 +76,9 @@ def generate():
                     yield (X_train[i], y_train[i])
                 else:
                     yield (np.random.permutation(X_train[i]), np.zeros_like(y_train[i]))
+        idxs=np.random.permutation(X_train.shape[0])
+        X_train=X_train[idxs]
+        y_train=y_train[idxs]
 
 
 ds = tf.data.Dataset.from_generator(generate, (tf.float32, tf.float32),
@@ -85,7 +88,7 @@ ds = tf.data.Dataset.from_generator(generate, (tf.float32, tf.float32),
 batch_size = 200
 # @ define shuffle parameters, e.g. buffer size
 # ds=ds.shuffle().batch(batch_size)
-ds = ds.shuffle(buffer_size=len(X_train)//2).batch(batch_size)
+ds = ds.batch(batch_size)
 
 #
 # # Adatgenerátor a keveréshez - validációs halmaz
@@ -157,7 +160,7 @@ model = load_model("./model/tbinet_sajat_tf2_hs_02_d2.h5")
 print('model summary')
 model.summary()
 
-checkpointer = ModelCheckpoint(filepath="./model/tbinet_kevgen_04_.{epoch:02d}.hdf5", verbose=1,
+checkpointer = ModelCheckpoint(filepath="./model/tbinet_kevgen_05_.{epoch:02d}.hdf5", verbose=1,
                                save_best_only=False)
 # earlystopper = EarlyStopping(monitor='val_loss', patience=10, verbose=1, restore_best_weights=True)
 
@@ -166,4 +169,4 @@ model.fit(ds, epochs=60, steps_per_epoch=2 * (X_train.shape[0] // batch_size), s
           callbacks=[checkpointer])
 # model.fit(ds, epochs=1,steps_per_epoch=(X_train.shape[0]//batch_size), callbacks=[earlystopper, checkpointer])
 
-model.save('./model/tbinet_sajat_kevgen_04_d1.h5')
+model.save('./model/tbinet_sajat_kevgen_05_d1.h5')

@@ -8,7 +8,8 @@ conda install tensorflow-gpu==2.1
 ```
 ## Datasets
 * [Zeng's dataset](http://cnn.csail.mit.edu/)
-* [DeepSea dataset](http://deepsea.princeton.edu/help/ "DeepSea dataset")
+* [DeepSea dataset information](http://deepsea.princeton.edu/help/ "DeepSea dataset")
+    * [Direct download link of .mat files](http://deepsea.princeton.edu/media/code/deepsea_train_bundle.v0.9.tar.gz)
 
 Data conversion from `.mat` to `.npz` can be done by:  
 `python convert_data.py --in_fname path_to_mat --out_fname path_to_output_npz`
@@ -49,4 +50,4 @@ python eval_ood_attack.py --attack attacks.Shuffle --data_path path_to_test_set 
 python eval_ood_attack.py --attack attacks.Uniform --data_path path_to_test_set --test_path path_to_test_set --model_path path_to_model
 ```
 
-Partial (incomplete) Results of the Evaluations: [here](add_link_here)
+Partial (incomplete) Results of the Evaluations: [here](https://uszeged-my.sharepoint.com/:f:/g/personal/pap_gergely_1_o365_u-szeged_hu/EsIWiEKSJMZPrSRmeuspUdwBL-a2WciUykMo4ZajqHLaeA?e=72HNaZ)
