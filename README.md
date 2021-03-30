@@ -50,4 +50,4 @@ python eval_ood_attack.py --attack attacks.Shuffle --data_path path_to_test_set 
 python eval_ood_attack.py --attack attacks.Uniform --data_path path_to_test_set --test_path path_to_test_set --model_path path_to_model
 ```
 
-Partial (incomplete) Results of the Evaluations: [here](https://uszeged-my.sharepoint.com/:f:/g/personal/pap_gergely_1_o365_u-szeged_hu/EsIWiEKSJMZPrSRmeuspUdwBL-a2WciUykMo4ZajqHLaeA?e=72HNaZ)
+Partial (incomplete) Results of the Evaluations: [here](https://uszeged-my.sharepoint.com/:f:/g/personal/pap_gergely_1_o365_u-szeged_hu/EsIWiEKSJMZPrSRmeuspUdwBStlp_nT6SEdWzadSsDfLIQ?e=jZ8EoO)
