@@ -35,6 +35,14 @@ def avg_auprc(y, p, disp=False):
     return np.nanmean(aucs)
 
 
+def bce_loss(y, p, disp=False):
+    bce = tf.keras.losses.BinaryCrossentropy()
+    bce_loss_val = bce(y, p).numpy()
+    if disp:
+        print(bce_loss_val)
+    return bce_loss_val
+
+
 def max_score(p):
     return np.max(p, axis=1, keepdims=True)
 
@@ -92,8 +100,10 @@ def main(params):
 
     # eval performance on the test set
     stats = [{**base_stat, 'set': 'in', 'avg-auroc': avg_auroc(y_test, pred_in),
-              'avg-auprc': avg_auprc(y_test, pred_in)}]
-    print(stats[-1])
+              'avg-auprc': avg_auprc(y_test, pred_in),
+              'score': "",
+              'bce-loss': bce_loss(y_test, pred_in)}]
+    print(stats[-2:])
     pred = np.concatenate((pred_in, pred_out), axis=0)
     is_in = np.zeros((pred.shape[0], 1))
     is_in[:is_in.shape[0] // 2] = 1
@@ -104,7 +114,8 @@ def main(params):
         stats.append({**base_stat, 'set': attack.get_name(),
                       'score': name,
                       'avg-auroc': avg_auroc(is_in, score),
-                      'avg-auprc': avg_auprc(is_in, score)
+                      'avg-auprc': avg_auprc(is_in, score),
+                      # 'loss-bce': bce_loss(is_in, score),
                       })
         print(stats[-1])
 
@@ -121,6 +132,7 @@ if __name__ == '__main__':
     parser.add_argument('--head', type=int)
     parser.add_argument('--data_path', type=str, required=True)
     parser.add_argument('--test_path', type=str)
+    #parser.add_argument('--val_path', type=str)
     parser.add_argument('--out_fname', type=str)
     parser.add_argument('--attack', type=str, required=True)
     parser.add_argument('--m_path', type=str, required=True)
