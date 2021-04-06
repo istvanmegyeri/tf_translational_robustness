@@ -54,6 +54,27 @@ class Uniform(Attack):
         return x_uni, y
 
 
+class GenSeq(Attack):
+
+    def __init__(self, model, seed=9, **kwargs) -> None:
+        super().__init__(model, **kwargs)
+        self.seed = seed
+
+    def get_name(self):
+        return "GenSeq"
+
+    def __call__(self, x, y):
+        rnd = np.random.RandomState(self.seed)
+        x_gen = np.zeros_like(x, dtype=np.float32)
+        sample_shape = x[0].shape
+        seq_idxs = np.arange(0, sample_shape[0])
+        for i in range(x_gen.shape[0]):
+            random_ids = rnd.randint(0, 4, sample_shape[0])
+            x_gen[i, seq_idxs, random_ids] = 1
+            # print(np.mean(x_gen[i], axis=0))
+        return x_gen, y
+
+
 class MiddleCrop(Attack):
 
     def __init__(self, model, seq_length, **kwargs) -> None:
