@@ -36,8 +36,7 @@ def avg_auprc(y, p, disp=False):
 
 
 def bce_loss(y, p, disp=False):
-    bce = tf.keras.losses.BinaryCrossentropy()
-    bce_loss_val = bce(y, p).numpy()
+    bce_loss_val = np.mean(np.where(y, -np.log(p), -np.log(1 - p)))
     if disp:
         print(bce_loss_val)
     return bce_loss_val
@@ -103,7 +102,7 @@ def main(params):
               'avg-auprc': avg_auprc(y_test, pred_in),
               'score': "",
               'bce-loss': bce_loss(y_test, pred_in)}]
-    print(stats[-2:])
+    print(stats[-1])
     pred = np.concatenate((pred_in, pred_out), axis=0)
     is_in = np.zeros((pred.shape[0], 1))
     is_in[:is_in.shape[0] // 2] = 1
@@ -132,7 +131,6 @@ if __name__ == '__main__':
     parser.add_argument('--head', type=int)
     parser.add_argument('--data_path', type=str, required=True)
     parser.add_argument('--test_path', type=str)
-    #parser.add_argument('--val_path', type=str)
     parser.add_argument('--out_fname', type=str)
     parser.add_argument('--attack', type=str, required=True)
     parser.add_argument('--m_path', type=str, required=True)
