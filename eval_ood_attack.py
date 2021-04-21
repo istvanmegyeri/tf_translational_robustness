@@ -1,38 +1,15 @@
 from argparse import ArgumentParser
 import numpy as np
 import tensorflow as tf
-from datareader import DataSet
-from sklearn.metrics import roc_curve, average_precision_score, precision_recall_curve, auc
+from datareader import DataLoader
 from collections import OrderedDict
 import matplotlib.pyplot as plt
 from attacks import Attack
 import util
 import pandas as pd
 import os
-
-
-def avg_auroc(y, p, disp=False):
-    aucs = []
-    for i in range(y.shape[1]):
-        fpr, tpr, thresholds = roc_curve(y[:, i], p[:, i])
-        if disp:
-            plt.plot(fpr, tpr)
-            plt.show()
-        v = auc(fpr, tpr)
-        aucs.append(v)
-    return np.nanmean(aucs)
-
-
-def avg_auprc(y, p, disp=False):
-    aucs = []
-    for i in range(y.shape[1]):
-        precision, recall, thresholds = precision_recall_curve(y[:, i], p[:, i])
-        if disp:
-            plt.plot(precision, recall)
-            plt.show()
-        v = auc(recall, precision)
-        aucs.append(v)
-    return np.nanmean(aucs)
+from metrics import avg_auprc, avg_auroc
+from sklearn.metrics import average_precision_score
 
 
 def bce_loss(y, p, disp=False):
@@ -69,7 +46,7 @@ def main(params):
                              ('mean', mean_score),
                              ('loss', loss_score)
                              ])
-    ds = DataSet(params.data_path, params.test_path)
+    ds = DataLoader(params.data_path, params.test_path)
     model = tf.keras.models.load_model(params.m_path)
     x_test, y_test = ds.get_test()
     if params.head is not None:

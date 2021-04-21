@@ -2,7 +2,7 @@ from argparse import ArgumentParser
 from tensorflow import keras
 import tensorflow as tf
 import numpy as np
-from datareader import DataSet
+from datareader import DataLoader
 from models import TFModel
 import os
 import pandas as pd
@@ -18,7 +18,7 @@ def make_attack(class_name, model, args) -> Attack:
 
 def main(params):
     print(params)
-    ds = DataSet()
+    ds = DataLoader()
     x_train, y_train = ds.get_train()
     x_val, y_val = ds.get_val()
     print(x_train.shape, x_val.shape, y_train.shape, y_val.shape)

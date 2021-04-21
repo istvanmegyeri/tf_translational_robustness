@@ -42,7 +42,7 @@ python train_zeng.py --attack attacks.WorstCrop
 ## Model evaluation
 Under translation attack:
 ```
-python eval_trans_attack.p --attack attacks.WorstCrop --model_path path_to_model
+python eval_trans_attack.p --attack attacks.WorstCrop --model_path path_to_model --data_path path_to_data
 ```
 Under ood attack:
 ```

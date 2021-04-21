@@ -85,8 +85,8 @@ class MiddleCrop(Attack):
         return "MiddleCrop"
 
     def __call__(self, x, y):
-        dim_to_crop = x.shape[2] - self.seq_length
-        return x[:, :, dim_to_crop // 2:-dim_to_crop // 2], y
+        dim_to_crop = x.shape[1] - self.seq_length
+        return x[:, dim_to_crop // 2:-dim_to_crop // 2], y
 
 
 class RandomCrop(Attack):
@@ -99,7 +99,7 @@ class RandomCrop(Attack):
         return "RandomCrop"
 
     def __call__(self, x, y):
-        x_crop = tf.image.random_crop(x, size=[x.shape[0], x.shape[1], self.seq_length, x.shape[3]])
+        x_crop = tf.image.random_crop(x, size=[x.shape[0], self.seq_length, x.shape[2]])
         return x_crop, y
 
 
@@ -119,21 +119,28 @@ class WorstCrop(Attack):
             # self.loss = lambda p, y: -np.log(np.sum(p * y, axis=1))
             eps = 1e-4
             self.loss = lambda p, y: -np.log(np.maximum(np.sum(p * y, axis=1), eps))
+        elif loss == 'bce':
+            eps = 1e-4
+            self.loss = lambda p, y: np.mean(np.where(y, -np.log(p), -np.log(1 - p)), axis=1)
 
     def get_name(self):
         return "WorstCrop"
 
     def __call__(self, x, y):
-        dim_to_crop = x.shape[2] - self.seq_length
-        x_adv = x[:, :, :-dim_to_crop]
+        dim_to_crop = x.shape[1] - self.seq_length
+        x_adv = x[:, :-dim_to_crop]
         pred = self.model.predict(x_adv, batch_size=self.batch_size)
         l_val = self.loss(pred, y)
+        n = dim_to_crop + 1
+        print('Progress: {:.3f} {:.3f}'.format(1 / n, np.mean(l_val)), end='\r')
         for i in range(1, dim_to_crop + 1):
-            x_adv_i = x[:, :, i:x.shape[2] - (dim_to_crop - i)]
+            print('Progress: {:.3f} {:.3f}'.format((i + 1) / n, np.mean(l_val)), end='\r')
+            x_adv_i = x[:, i:x.shape[1] - (dim_to_crop - i)]
             pred_i = self.model.predict(x_adv_i, batch_size=self.batch_size)
             l_vali = self.loss(pred_i, y)
             improved = l_vali > l_val
             if np.any(improved):
-                x_adv = tf.where(tf.reshape(improved, (improved.shape[0], 1, 1, 1)), x_adv_i, x_adv)
+                x_adv = tf.where(tf.reshape(improved, (improved.shape[0], 1, 1)), x_adv_i, x_adv)
                 l_val[improved] = l_vali[improved]
+        print('')
         return x_adv, y
