@@ -8,6 +8,7 @@ import util
 from attacks import Attack
 import time
 import metrics
+from collections import OrderedDict
 
 
 def make_attack(class_name, model, args) -> Attack:
@@ -19,19 +20,18 @@ def main(params):
     print(params)
     ds = DataLoader(params.data_path, ds_set=params.set)
     x, y = ds.get_data()
-    x = x[:, 95:1105]
     print(x.shape, y.shape)
     model = tf.keras.models.load_model(params.model_path)
     attack = make_attack(params.attack, model, params)
     preds_test = model.predict(attack(x, y)[0])
 
-    d = {
-        "ds": params.data_path,
-        "attack": attack.get_name(),
-        "train_mode": params.model_path.rsplit("/", 3)[1],
-        "path": params.model_path,
-        "time": time.asctime(time.localtime(time.time()))
-    }
+    d = OrderedDict([
+        ("ds", params.data_path),
+        ("attack", attack.get_name()),
+        ("train_mode", params.model_path.rsplit("/", 3)[1]),
+        ("path", params.model_path),
+        ("time", time.asctime(time.localtime(time.time())))
+    ])
     for m in params.metric.split(','):
         if m == 'acc':
             corr_preds_test = (np.argmax(preds_test, axis=1) == np.argmax(y, axis=1))

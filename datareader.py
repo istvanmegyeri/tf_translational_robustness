@@ -22,10 +22,10 @@ class DataLoader():
             x_train, x_val, y_train, y_val = train_test_split(x_train, y_train, test_size=self.val_size,
                                                               random_state=self.seed)
             if self.ds_set == "train":
-                return x_train, y_train
+                return x_train[:,0,:,:], y_train
             elif self.ds_set == 'val':
-                return x_val, y_val
+                return x_val[:,0,:,:], y_val
             elif self.ds_set == 'test':
-                return x_test, y_test
+                return x_test[:,0,:,:], y_test
             else:
                 raise Exception('Unknown set option: {0}'.format(self.ds_set))
