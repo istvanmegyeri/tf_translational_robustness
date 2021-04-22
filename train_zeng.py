@@ -2,7 +2,7 @@ from argparse import ArgumentParser
 from tensorflow import keras
 import tensorflow as tf
 import numpy as np
-from datareader import DataLoader
+from datareader import ZengData
 from models import TFModel
 import os
 import pandas as pd
@@ -18,14 +18,18 @@ def make_attack(class_name, model, args) -> Attack:
 
 def main(params):
     print(params)
-    ds = DataLoader()
+    ds = ZengData(f_path=params.fname)
     x_train, y_train = ds.get_train()
     x_val, y_val = ds.get_val()
     print(x_train.shape, x_val.shape, y_train.shape, y_val.shape)
     tf_dataset = tf.data.Dataset.from_tensor_slices((x_train, y_train))
     tf_dataset = tf_dataset.shuffle(buffer_size=len(x_train), reshuffle_each_iteration=True).batch(params.batch_size)
-    model_holder = TFModel()
-    model = model_holder.build_model((x_train.shape[1], params.seq_length, x_train.shape[3]))
+    if params.reg == "NO":
+        model_holder = TFModel(activity_regularizer=None, kernel_regularizer=None, dropout=0)
+    else:
+        model_holder = TFModel()
+
+    model = model_holder.build_model((params.seq_length, x_train.shape[2]))
     optimizer = keras.optimizers.Adam(lr=5e-5)
 
     model.compile(loss='categorical_crossentropy', optimizer=optimizer, metrics=['accuracy'])
@@ -86,26 +90,26 @@ def main(params):
 if __name__ == '__main__':
     parser = ArgumentParser(description='App description')
     parser.add_argument('--gpu', type=int, default=0)
-    parser.add_argument('--seq_length', type=int, default=90)
+    # model params
+    parser.add_argument('--reg', type=str, default='preset')
+
+    # training params
     parser.add_argument('--batch_size', type=int, default=64)
     parser.add_argument('--epoch', type=int, default=100)
     parser.add_argument('--verbose', type=int, default=1)
-    parser.add_argument('--attack', type=str, default='attacks.RandomCrop')
-    parser.add_argument('--loss', type=str, default='zero-one')
     parser.add_argument('--save_dir', type=str)
+    # attack params
+    parser.add_argument('--attack', type=str, default='attacks.RandomCrop')
+    parser.add_argument('--seq_length', type=int, default=90)
+    parser.add_argument('--loss', type=str, default='xe')
+    # ds params
+    parser.add_argument('--fname', type=str, required=True)
+
     FLAGS = parser.parse_args()
     np.random.seed(9)
-    if FLAGS.gpu is not None:
-        gpus = tf.config.experimental.list_physical_devices('GPU')
-        selected = gpus[FLAGS.gpu]
-        tf.config.experimental.set_visible_devices(selected, 'GPU')
-        tf.config.experimental.set_memory_growth(selected, True)
-        tf.config.experimental.set_virtual_device_configuration(
-            selected,
-            [tf.config.experimental.VirtualDeviceConfiguration(memory_limit=3072)])
-        logical_gpus = tf.config.experimental.list_logical_devices('GPU')
-        l_gpu = logical_gpus[0]
-        with tf.device(l_gpu.name):
-            main(FLAGS)
-    else:
-        main(FLAGS)
+    os.environ["CUDA_VISIBLE_DEVICES"] = str(FLAGS.gpu)
+    os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
+
+    physical_devices = tf.config.list_physical_devices('GPU')
+    tf.config.experimental.set_memory_growth(physical_devices[0], True)
+    main(FLAGS)

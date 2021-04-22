@@ -3,7 +3,7 @@ from sklearn.model_selection import train_test_split
 
 
 class DataLoader():
-    def __init__(self, f_path, ds_set,
+    def __init__(self, f_path, ds_set=None,
                  val_size=0.1,
                  seed=9) -> None:
         self.ds_set = ds_set
@@ -12,20 +12,34 @@ class DataLoader():
         self.seed = seed
         self.data = np.load(self.f_path)
 
-    def get_data(self):
+    def get_data(self, ds_set=None):
         is_deep_sea = 'x' in self.data.keys()
         if is_deep_sea:
             return self.data['x'], self.data['y']
         else:
+            if ds_set is None and self.ds_set is None:
+                raise Exception('ds_set must be defined')
             x_train, y_train, x_test, y_test = self.data['arr_0'], self.data['arr_1'], self.data['arr_2'], \
                                                self.data['arr_3']
             x_train, x_val, y_train, y_val = train_test_split(x_train, y_train, test_size=self.val_size,
                                                               random_state=self.seed)
-            if self.ds_set == "train":
-                return x_train[:,0,:,:], y_train
-            elif self.ds_set == 'val':
-                return x_val[:,0,:,:], y_val
-            elif self.ds_set == 'test':
-                return x_test[:,0,:,:], y_test
+            selected = ds_set if ds_set is not None else self.ds_set
+            if selected == "train":
+                return x_train[:, 0, :, :], y_train
+            elif selected == 'val':
+                return x_val[:, 0, :, :], y_val
+            elif selected == 'test':
+                return x_test[:, 0, :, :], y_test
             else:
                 raise Exception('Unknown set option: {0}'.format(self.ds_set))
+
+
+class ZengData(DataLoader):
+    def get_train(self):
+        return self.get_data('train')
+
+    def get_val(self):
+        return self.get_data('val')
+
+    def get_test(self):
+        return self.get_data('test')

@@ -1,3 +1,6 @@
+data/**
+_data/**
+saved_models/**
 models/**
 data/**
 .idea/**

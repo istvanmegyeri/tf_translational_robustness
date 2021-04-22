@@ -105,10 +105,11 @@ class RandomCrop(Attack):
 
 class WorstCrop(Attack):
 
-    def __init__(self, model, seq_length, loss='zero-one', batch_size=64, **kwargs) -> None:
+    def __init__(self, model, seq_length, loss='zero-one', batch_size=64,debug=False, **kwargs) -> None:
         super().__init__(model, **kwargs)
         self.seq_length = seq_length
         self.batch_size = batch_size
+        self.debug=debug
         if loss == 'zero-one':
             self.loss = lambda p, y: np.argmax(p, axis=1) != np.argmax(y, axis=1)
         elif loss == 'mse':
@@ -132,9 +133,11 @@ class WorstCrop(Attack):
         pred = self.model.predict(x_adv, batch_size=self.batch_size)
         l_val = self.loss(pred, y)
         n = dim_to_crop + 1
-        print('Progress: {:.3f} {:.3f}'.format(1 / n, np.mean(l_val)), end='\r')
+        if self.debug:
+            print('Progress: {:.3f} {:.3f}'.format(1 / n, np.mean(l_val)), end='\r')
         for i in range(1, dim_to_crop + 1):
-            print('Progress: {:.3f} {:.3f}'.format((i + 1) / n, np.mean(l_val)), end='\r')
+            if self.debug:
+                print('Progress: {:.3f} {:.3f}'.format((i + 1) / n, np.mean(l_val)), end='\r')
             x_adv_i = x[:, i:x.shape[1] - (dim_to_crop - i)]
             pred_i = self.model.predict(x_adv_i, batch_size=self.batch_size)
             l_vali = self.loss(pred_i, y)
@@ -142,5 +145,6 @@ class WorstCrop(Attack):
             if np.any(improved):
                 x_adv = tf.where(tf.reshape(improved, (improved.shape[0], 1, 1)), x_adv_i, x_adv)
                 l_val[improved] = l_vali[improved]
-        print('')
+        if self.debug:
+            print('')
         return x_adv, y
