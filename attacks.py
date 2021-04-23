@@ -2,6 +2,7 @@ from abc import ABC
 from abc import abstractmethod
 import tensorflow as tf
 import numpy as np
+import time
 
 
 class Attack(ABC):
@@ -86,6 +87,10 @@ class MiddleCrop(Attack):
 
     def __call__(self, x, y):
         dim_to_crop = x.shape[1] - self.seq_length
+        if dim_to_crop == 0:
+            return x, y
+        elif dim_to_crop < 0:
+            raise Exception('seq length must be lower or equal to {0}'.format(x.shape[1]))
         return x[:, dim_to_crop // 2:-dim_to_crop // 2], y
 
 
@@ -105,11 +110,15 @@ class RandomCrop(Attack):
 
 class WorstCrop(Attack):
 
-    def __init__(self, model, seq_length, loss='zero-one', batch_size=64,debug=False, **kwargs) -> None:
+    def __init__(self, model, seq_length, loss='zero-one', attack_batch=64, n_try=None, debug=False,
+                 seed=9,
+                 **kwargs) -> None:
         super().__init__(model, **kwargs)
+        self.rnd = np.random.RandomState(seed)
+        self.n_try = n_try
         self.seq_length = seq_length
-        self.batch_size = batch_size
-        self.debug=debug
+        self.batch_size = attack_batch
+        self.debug = debug
         if loss == 'zero-one':
             self.loss = lambda p, y: np.argmax(p, axis=1) != np.argmax(y, axis=1)
         elif loss == 'mse':
@@ -127,19 +136,33 @@ class WorstCrop(Attack):
     def get_name(self):
         return "WorstCrop"
 
+    def pred_slides(self, x, shifts):
+        dim_to_crop = x.shape[1] - self.seq_length
+        x_slides = []
+        for i in shifts:
+            x_slides.append(x[:, i:x.shape[1] - (dim_to_crop - i)])
+        pred_all = self.model.predict(np.concatenate(x_slides, axis=0), self.batch_size)
+        pred_slds = []
+        for i in range(shifts.shape[0]):
+            pred_slds.append(pred_all[i * x.shape[0]:(i + 1) * x.shape[0]])
+        return pred_slds
+
     def __call__(self, x, y):
         dim_to_crop = x.shape[1] - self.seq_length
         x_adv = x[:, :-dim_to_crop]
-        pred = self.model.predict(x_adv, batch_size=self.batch_size)
-        l_val = self.loss(pred, y)
-        n = dim_to_crop + 1
+        shifts = range(dim_to_crop + 1) if self.n_try is None else self.rnd.choice(np.arange(dim_to_crop + 1),
+                                                                                   self.n_try, replace=False)
+        preds = self.pred_slides(x, shifts)
+        l_val = self.loss(preds[0], y)
+        n = dim_to_crop + 1 if self.n_try is None else self.n_try
         if self.debug:
-            print('Progress: {:.3f} {:.3f}'.format(1 / n, np.mean(l_val)), end='\r')
-        for i in range(1, dim_to_crop + 1):
+            print('Progress: {:.3f} {:.5f}'.format(1 / n, np.mean(l_val)), end='\r')
+        for idx, i in enumerate(shifts[1:]):
             if self.debug:
-                print('Progress: {:.3f} {:.3f}'.format((i + 1) / n, np.mean(l_val)), end='\r')
+                time.sleep(1)
+                print('Progress: {:.3f} {:.5f}'.format((idx + 2) / n, np.mean(l_val)), end='\r')
             x_adv_i = x[:, i:x.shape[1] - (dim_to_crop - i)]
-            pred_i = self.model.predict(x_adv_i, batch_size=self.batch_size)
+            pred_i = preds[idx + 1]
             l_vali = self.loss(pred_i, y)
             improved = l_vali > l_val
             if np.any(improved):

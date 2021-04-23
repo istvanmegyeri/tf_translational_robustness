@@ -44,7 +44,7 @@ data_folder = "./data/"
 # validmat = scipy.io.loadmat(data_folder + 'valid.mat')
 #
 trainmat = np.load(data_folder+ 'train.npz')
-X_train = trainmat['x']
+x_train = trainmat['x']
 # X_train = np.transpose(X_train, axes=(1, 0, 2))
 y_train = trainmat['y']
 # y_train = y_train[:, 125:815]
@@ -164,7 +164,7 @@ checkpointer = ModelCheckpoint(filepath="./model/tbinet_kevgen_05_.{epoch:02d}.h
                                save_best_only=False)
 # earlystopper = EarlyStopping(monitor='val_loss', patience=10, verbose=1, restore_best_weights=True)
 
-model.fit(ds, epochs=60, steps_per_epoch=2 * (X_train.shape[0] // batch_size), shuffle=True, verbose=1,
+model.fit(ds, epochs=60, steps_per_epoch=2 * (x_train.shape[0] // batch_size), shuffle=True, verbose=1,
           # validation_data=ds_val, validation_steps=2 * (x_val.shape[0] // batch_size),
           callbacks=[checkpointer])
 # model.fit(ds, epochs=1,steps_per_epoch=(X_train.shape[0]//batch_size), callbacks=[earlystopper, checkpointer])

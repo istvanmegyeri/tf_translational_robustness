@@ -1,5 +1,6 @@
 import numpy as np
 from sklearn.model_selection import train_test_split
+import os
 
 
 class DataLoader():
@@ -32,6 +33,24 @@ class DataLoader():
                 return x_test[:, 0, :, :], y_test
             else:
                 raise Exception('Unknown set option: {0}'.format(self.ds_set))
+
+
+class DeepSea():
+
+    def __init__(self, data_dir) -> None:
+        self.data_dir = data_dir
+
+    def get_train(self):
+        ds = DataLoader(f_path=os.path.join(self.data_dir, 'train_e.npz'))
+        return ds.get_data()
+
+    def get_val(self):
+        ds = DataLoader(f_path=os.path.join(self.data_dir, 'valid_e.npz'))
+        return ds.get_data()
+
+    def get_test(self):
+        ds = DataLoader(f_path=os.path.join(self.data_dir, 'test_e.npz'))
+        return ds.get_data()
 
 
 class ZengData(DataLoader):

@@ -13,5 +13,17 @@ function train {
   done
 }
 
-train
+function train_tbinet {
+  for sl in 500 1000; do
+    for add_s in N Y; do
+      for a in MiddleCrop RandomCrop WorstCrop; do
+        #echo $fn" "$a" "$sl;
+        echo "python train_tbinet.py --data_dir data/encode_deepsea/ --add_shuf "$add_s" --attack attacks."$a" --seq_length "$sl" --save_dir "$out_dir"/tbinet_"$add_s"_"$sl"_"$a
+      done
+    done
+  done
+}
+
+#train
+train_tbinet
 
