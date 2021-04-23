@@ -6,7 +6,7 @@ function train {
         for a in MiddleCrop RandomCrop WorstCrop; do
           #echo $fn" "$a" "$sl;
           dname=`echo $fn | cut -d "/" -f 3-4`
-          echo "python train_zeng.py --fname "$fn" --attack attacks."$a" --seq_length "$sl" --save_dir "$out_dir"/"$dname" --reg "$reg
+          echo "python train_zeng.py --fname "$fn" --attack attacks."$a" --seq_length "$sl" --save_dir "$out_dir"/"$reg"/"$sl"/"$dname"/"$a" --reg "$reg
         done
       done
     done
