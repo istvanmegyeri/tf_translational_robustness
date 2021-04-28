@@ -131,7 +131,7 @@ class WorstCrop(Attack):
             self.loss = lambda p, y: -np.log(np.maximum(np.sum(p * y, axis=1), eps))
         elif loss == 'bce':
             eps = 1e-4
-            self.loss = lambda p, y: np.mean(np.where(y, -np.log(p), -np.log(1 - p)), axis=1)
+            self.loss = lambda p, y: np.mean(np.where(y, -np.log(np.maximum(p,eps)), -np.log(np.maximum(1 - p,eps))), axis=1)
 
     def get_name(self):
         return "WorstCrop"
