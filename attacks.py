@@ -104,7 +104,10 @@ class RandomCrop(Attack):
         return "RandomCrop"
 
     def __call__(self, x, y):
-        x_crop = tf.image.random_crop(x, size=[x.shape[0], self.seq_length, x.shape[2]])
+        x_crop = np.zeros((x.shape[0], self.seq_length, x.shape[2]), dtype=x.dtype)
+        for i in range(x.shape[0]):
+            x_crop[i] = tf.image.random_crop(x[i], size=[self.seq_length, x.shape[2]])
+
         return x_crop, y
 
 
@@ -131,7 +134,8 @@ class WorstCrop(Attack):
             self.loss = lambda p, y: -np.log(np.maximum(np.sum(p * y, axis=1), eps))
         elif loss == 'bce':
             eps = 1e-4
-            self.loss = lambda p, y: np.mean(np.where(y, -np.log(np.maximum(p,eps)), -np.log(np.maximum(1 - p,eps))), axis=1)
+            self.loss = lambda p, y: np.mean(np.where(y, -np.log(np.maximum(p, eps)), -np.log(np.maximum(1 - p, eps))),
+                                             axis=1)
 
     def get_name(self):
         return "WorstCrop"
@@ -151,7 +155,7 @@ class WorstCrop(Attack):
         dim_to_crop = x.shape[1] - self.seq_length
         x_adv = x[:, :-dim_to_crop]
         shifts = np.arange(dim_to_crop + 1) if self.n_try is None else self.rnd.choice(np.arange(dim_to_crop + 1),
-                                                                                   self.n_try, replace=False)
+                                                                                       self.n_try, replace=False)
         preds = self.pred_slides(x, shifts)
         l_val = self.loss(preds[0], y)
         n = dim_to_crop + 1 if self.n_try is None else self.n_try

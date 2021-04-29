@@ -49,13 +49,13 @@ def main(params):
     ds = DataLoader(params.data_path, params.test_path)
     model = tf.keras.models.load_model(params.m_path)
     x_test, y_test = ds.get_test()
+    use_avg = True
     if params.head is not None:
         x_test = np.concatenate((x_test[:params.head], x_test[x_test.shape[0] // 2:params.head]), axis=0)
         y_test = np.concatenate((y_test[:params.head], y_test[y_test.shape[0] // 2:params.head]), axis=0)
 
     # generate ood samples
     attack = make_attack(params.attack, model, params)
-    use_avg = True
     if use_avg:
         x_test_out, y_test_out = attack(x_test[:x_test.shape[0] // 2], y_test[:x_test.shape[0] // 2])
     else:

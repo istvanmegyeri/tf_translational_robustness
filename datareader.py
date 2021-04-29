@@ -13,9 +13,11 @@ class DataLoader():
         self.seed = seed
         self.data = np.load(self.f_path)
 
+    def is_deep_sea(self):
+        return 'x' in self.data.keys()
+
     def get_data(self, ds_set=None):
-        is_deep_sea = 'x' in self.data.keys()
-        if is_deep_sea:
+        if self.is_deep_sea():
             return self.data['x'], self.data['y']
         else:
             if ds_set is None and self.ds_set is None:
