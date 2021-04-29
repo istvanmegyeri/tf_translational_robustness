@@ -101,6 +101,8 @@ if __name__ == '__main__':
     # attack params
     parser.add_argument('--attack', type=str, default='attacks.RandomCrop')
     parser.add_argument('--seq_length', type=int, default=90)
+    parser.add_argument('--attack_batch', type=int, default=64*10)
+    parser.add_argument('--n_try', type=int)
     parser.add_argument('--loss', type=str, default='xe')
     # ds params
     parser.add_argument('--fname', type=str, required=True)

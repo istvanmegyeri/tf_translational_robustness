@@ -27,8 +27,12 @@ def main(params):
 
     d = OrderedDict([
         ("ds", params.data_path),
+        ("tf",params.data_path.split(os.path.sep)[-2]),
+        ("mode",params.data_path.split(os.path.sep)[-3]),
         ("attack", attack.get_name()),
-        ("train_mode", params.model_path.rsplit("/", 3)[1]),
+        ("seq_length", params.seq_length),
+        ("train_attack", params.model_path.split("/")[-3]),
+        ("train_mode", params.model_path.split("/",)[-5]),
         ("path", params.model_path),
         ("time", time.asctime(time.localtime(time.time())))
     ])
@@ -61,14 +65,15 @@ if __name__ == '__main__':
     parser.add_argument('--attack', type=str, default='attacks.RandomCrop')
     parser.add_argument('--seq_length', type=int, required=True)
     parser.add_argument('--batch_size', type=int, default=64)
-    parser.add_argument('--loss', type=str, default='zero-one')
+    parser.add_argument('--loss', type=str, default='xe')
     # dataset paremeters
     parser.add_argument('--set', type=str, default='val')
-    parser.add_argument('--out_fname', type=str)
     parser.add_argument('--data_path', type=str, required=True)
     # loaded model parameters
     parser.add_argument('--model_path', type=str, required=True)
     parser.add_argument('--metric', type=str, required=True)
+    #output params
+    parser.add_argument('--out_fname', type=str)
 
     FLAGS = parser.parse_args()
     np.random.seed(9)

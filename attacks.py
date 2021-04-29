@@ -150,7 +150,7 @@ class WorstCrop(Attack):
     def __call__(self, x, y):
         dim_to_crop = x.shape[1] - self.seq_length
         x_adv = x[:, :-dim_to_crop]
-        shifts = range(dim_to_crop + 1) if self.n_try is None else self.rnd.choice(np.arange(dim_to_crop + 1),
+        shifts = np.arange(dim_to_crop + 1) if self.n_try is None else self.rnd.choice(np.arange(dim_to_crop + 1),
                                                                                    self.n_try, replace=False)
         preds = self.pred_slides(x, shifts)
         l_val = self.loss(preds[0], y)
