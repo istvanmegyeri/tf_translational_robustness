@@ -104,7 +104,7 @@ class RandomCrop(Attack):
         return "RandomCrop"
 
     def __call__(self, x, y):
-        x_crop = np.zeros((x.shape[0], self.seq_length, x.shape[2]), dtype=x.dtype)
+        x_crop = np.zeros((x.shape[0], self.seq_length, x.shape[2]), dtype=np.float32)
         for i in range(x.shape[0]):
             x_crop[i] = tf.image.random_crop(x[i], size=[self.seq_length, x.shape[2]])
 
