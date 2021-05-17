@@ -34,14 +34,14 @@ python train_tbinet.py --attack attacks.WorstCrop --data_dir path_to_data_dir
 ## Model evaluation
 * on D<sub>s</sub> dataset:
 ```
-python eval_trans_attack.py --attack attacks.MiddleCrop --model_path path_to_model --data_path path_to_data --seq_length [75|90|95|101] --metric acc --loss xe
-python eval_trans_attack.py --attack attacks.RandomCrop --model_path path_to_model --data_path path_to_data --seq_length [75|90|95|101] --metric acc --loss xe
+python eval_trans_attack.py --attack attacks.MiddleCrop --model_path path_to_model --data_path path_to_data --seq_length [75|90|95|101] --metric acc
+python eval_trans_attack.py --attack attacks.RandomCrop --model_path path_to_model --data_path path_to_data --seq_length [75|90|95|101] --metric acc
 python eval_trans_attack.py --attack attacks.WorstCrop --model_path path_to_model --data_path path_to_data --seq_length [75|90|95|101] --metric acc --loss xe
 ```
 * on D<sub>l</sub> dataset:
 ```
-python eval_trans_attack.py --attack attacks.MiddleCrop --model_path path_to_model --data_path path_to_test_set --seq_length [900|1000] --metric auc,aupr --loss bce --n_try 20
-python eval_trans_attack.py --attack attacks.RandomCrop --model_path path_to_model --data_path path_to_test_set --seq_length [900|1000] --metric auc,aupr --loss bce --n_try 20
+python eval_trans_attack.py --attack attacks.MiddleCrop --model_path path_to_model --data_path path_to_test_set --seq_length [900|1000] --metric auc,aupr
+python eval_trans_attack.py --attack attacks.RandomCrop --model_path path_to_model --data_path path_to_test_set --seq_length [900|1000] --metric auc,aupr
 python eval_trans_attack.py --attack attacks.WorstCrop --model_path path_to_model --data_path path_to_test_set --seq_length [900|1000] --metric auc,aupr --loss bce --n_try 20
 ```
 
