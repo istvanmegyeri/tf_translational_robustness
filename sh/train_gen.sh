@@ -24,7 +24,7 @@ function train_tbinet {
   done
 }
 
-#train "preset NO" "75 90 95" "MiddleCrop RandomCrop WorstCrop"
+#train "preset NO" "75" "WorstCrop"
 #train "preset NO" "101" "MiddleCrop"
 #train_tbinet
 

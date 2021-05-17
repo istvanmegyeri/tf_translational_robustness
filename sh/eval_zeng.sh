@@ -1,5 +1,5 @@
 out_dir=saved_models
-out_fname=results/zeng/translate_val_loss.csv
+out_fname=results/zeng/translate_val_loss_fixed.csv
 evalbest(){
   #m_dirs=`ls -d $out_dir/*/*/*/*/*/`
   m_dirs=`ls -d $1`
@@ -29,8 +29,9 @@ evalbest(){
     done
   done
 }
+#evalbest $out_dir"fixed/*/*/*/*/*/" "val_loss" "MiddleCrop RandomCrop WorstCrop"
 #evalbest $out_dir"/*/75/*/*/*/" "val_loss" "MiddleCrop RandomCrop WorstCrop"
 #evalbest $out_dir"/*/90/*/*/*/" "val_loss" "MiddleCrop RandomCrop WorstCrop"
 #evalbest $out_dir"/*/95/*/*/*/" "val_loss" "MiddleCrop RandomCrop WorstCrop"
-out_fname=results/zeng/101_val_loss.csv
-evalbest $out_dir"/*/101/*/*/*/" "val_loss" "MiddleCrop"
+#out_fname=results/zeng/101_val_loss.csv
+#evalbest $out_dir"/*/101/*/*/*/" "val_loss" "MiddleCrop"
