@@ -17,7 +17,7 @@ Data conversion from `.mat` to `.npz` can be done by:
 Alternatively, you can download our converted data from [here](https://uszeged-my.sharepoint.com/:f:/g/personal/pap_gergely_1_o365_u-szeged_hu/EmfyJP3jFWFLjxe_NK2t3N0BGFOBTn-kCO0Id8dOoV9N0A?e=yAiAx2). 
 
 ## Model training
-Our best models can be downloaded from [here](add_link_here). Checkpoints are also avaiable [here](https://uszeged-my.sharepoint.com/:f:/g/personal/pap_gergely_1_o365_u-szeged_hu/Eo9ntvgjGjdMjWVLWxgLXq4Bz4L9fqJCyhbM8wuX1wdLIw?e=6LDzNK).
+Our best models can be downloaded from [here](https://uszeged-my.sharepoint.com/:f:/g/personal/pap_gergely_1_o365_u-szeged_hu/Eo9ntvgjGjdMjWVLWxgLXq4Bz4L9fqJCyhbM8wuX1wdLIw?e=6LDzNK).
 
 ### Normal training
 * on Zeng's dataset:
