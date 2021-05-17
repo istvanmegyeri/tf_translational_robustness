@@ -48,4 +48,4 @@ python eval_trans_attack.py --attack attacks.WorstCrop --model_path path_to_mode
 ```
 
 
-Partial (incomplete) Results of the Evaluations: [here](https://uszeged-my.sharepoint.com/:f:/g/personal/pap_gergely_1_o365_u-szeged_hu/EsIWiEKSJMZPrSRmeuspUdwBStlp_nT6SEdWzadSsDfLIQ?e=jZ8EoO)
+Results of the Evaluations: [here](https://uszeged-my.sharepoint.com/:f:/g/personal/pap_gergely_1_o365_u-szeged_hu/ErXUaVN-uFJGkeKw9GnxmQkB6RdA3RfsG4NW3z_KybF6-w?e=sxskCw)
