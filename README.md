@@ -1,4 +1,6 @@
-# tf_attack
+# Translational robustness of neural networks trained for transcription factor binding site classification
+This repo contains the sourcecode for the paper: Translational robustness of neural networks
+trained for transcription factor binding site classification
 
 ## Evironment setup
 ```
