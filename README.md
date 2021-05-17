@@ -7,8 +7,8 @@ conda activate env_name
 conda install tensorflow-gpu==2.1
 ```
 ## Datasets
-* [Zeng's dataset](http://cnn.csail.mit.edu/)
-* [DeepSea dataset information](http://deepsea.princeton.edu/help/ "DeepSea dataset")
+* [Zeng's dataset(D<sub>s</sub>)](http://cnn.csail.mit.edu/)
+* [DeepSea dataset information(D<sub>l</sub>)](http://deepsea.princeton.edu/help/ "DeepSea dataset")
     * [Direct download link of .mat files](http://deepsea.princeton.edu/media/code/deepsea_train_bundle.v0.9.tar.gz)
 
 Data conversion from `.mat` to `.npz` can be done by:  
@@ -19,36 +19,31 @@ Alternatively, you can download our converted data from [here](https://uszeged-m
 ## Model training
 Our best models can be downloaded from [here](https://uszeged-my.sharepoint.com/:f:/g/personal/pap_gergely_1_o365_u-szeged_hu/Eo9ntvgjGjdMjWVLWxgLXq4Bz4L9fqJCyhbM8wuX1wdLIw?e=6LDzNK).
 
-### Normal training
-* on Zeng's dataset:
+* on D<sub>s</sub> dataset:
 ```
-python train_zeng.py --attack attacks.MiddleCrop  
-python train_zeng.py --attack attacks.RandomCrop
+python train_zeng.py --attack attacks.MiddleCrop --fname path_to_data  
+python train_zeng.py --attack attacks.RandomCrop --fname path_to_data
+python train_zeng.py --attack attacks.WorstCrop --fname path_to_data
 ```
-* on DeepSea dataset:
+* on D<sub>l</sub> dataset:
 ```
-...
+python train_tbinet.py --attack attacks.MiddleCrop --data_dir path_to_data_dir  
+python train_tbinet.py --attack attacks.RandomCrop --data_dir path_to_data_dir
+python train_tbinet.py --attack attacks.WorstCrop --data_dir path_to_data_dir
 ```
-### Adversarial training
-* on Zeng's dataset:  
+## Model evaluation
+* on D<sub>s</sub> dataset:
 ```
-python train_zeng.py --attack attacks.WorstCrop
+python eval_trans_attack.py --attack attacks.MiddleCrop --model_path path_to_model --data_path path_to_data --seq_length [75|90|95|101] --metric acc --loss xe
+python eval_trans_attack.py --attack attacks.RandomCrop --model_path path_to_model --data_path path_to_data --seq_length [75|90|95|101] --metric acc --loss xe
+python eval_trans_attack.py --attack attacks.WorstCrop --model_path path_to_model --data_path path_to_data --seq_length [75|90|95|101] --metric acc --loss xe
 ```
-* on DeepSea dataset:
+* on D<sub>l</sub> dataset:
 ```
-...
+python eval_trans_attack.py --attack attacks.MiddleCrop --model_path path_to_model --data_path path_to_test_set --seq_length [900|1000] --metric auc,aupr --loss bce --n_try 20
+python eval_trans_attack.py --attack attacks.RandomCrop --model_path path_to_model --data_path path_to_test_set --seq_length [900|1000] --metric auc,aupr --loss bce --n_try 20
+python eval_trans_attack.py --attack attacks.WorstCrop --model_path path_to_model --data_path path_to_test_set --seq_length [900|1000] --metric auc,aupr --loss bce --n_try 20
 ```
 
-## Model evaluation
-Under translation attack:
-```
-python eval_trans_attack.p --attack attacks.WorstCrop --model_path path_to_model --data_path path_to_data
-```
-Under ood attack:
-```
-python eval_ood_attack.py --attack attacks.Shuffle --data_path path_to_test_set --test_path path_to_test_set --m_path path_to_model
-python eval_ood_attack.py --attack attacks.Uniform --data_path path_to_test_set --test_path path_to_test_set --m_path path_to_model
-python eval_ood_attack.py --attack attacks.GenSeq --data_path path_to_test_set --test_path path_to_test_set --m_path path_to_model
-```
 
 Partial (incomplete) Results of the Evaluations: [here](https://uszeged-my.sharepoint.com/:f:/g/personal/pap_gergely_1_o365_u-szeged_hu/EsIWiEKSJMZPrSRmeuspUdwBStlp_nT6SEdWzadSsDfLIQ?e=jZ8EoO)
