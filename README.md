@@ -2,6 +2,8 @@
 This repo contains the sourcecode for the paper: Translational robustness of neural networks
 trained for transcription factor binding site classification
 
+<img src="./crop_strat.gif"></img>
+
 ## Evironment setup
 ```
 conda create -n env_name python=3.6
