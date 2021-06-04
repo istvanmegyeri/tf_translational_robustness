@@ -2,7 +2,7 @@
 This repo contains the sourcecode for the paper: Translational robustness of neural networks
 trained for transcription factor binding site classification
 
-<img src="./crop_strat.gif"></img>
+<div style="display: block; margin-left: auto; margin-right: auto; width: 50%;"><img src="./crop_strat.gif"></img></div>
 
 ## Evironment setup
 ```
